@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/homeFragment">
+
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="com.example.securitymerch.ui.home.HomeFragment"
+        android:label="Inicio"
+        tools:layout="@layout/fragment_home">
+        <action
+            android:id="@+id/action_home_to_Bebidas"
+            app:destination="@id/bebidasFragment" />
+        <action
+            android:id="@+id/action_home_to_Botanas"
+            app:destination="@id/botanasFragment" />
+        <action
+            android:id="@+id/action_home_to_Limpieza"
+            app:destination="@id/limpiezaFragment" />
+        <action
+            android:id="@+id/action_home_to_Legumbres"
+            app:destination="@id/legumbresFragment" />
+        <action
+            android:id="@+id/action_home_to_Galletas"
+            app:destination="@id/galletasFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/bebidasFragment"
+        android:name="com.example.securitymerch.Bebidas"
+        android:label="Bebidas"
+        tools:layout="@layout/bebidas" />
+
+    <fragment
+        android:id="@+id/botanasFragment"
+        android:name="com.example.securitymerch.Botanas"
+        android:label="Botanas"
+        tools:layout="@layout/botanas" />
+
+    <fragment
+        android:id="@+id/limpiezaFragment"
+        android:name="com.example.securitymerch.Limpieza"
+        android:label="Productos de Limpieza"
+        tools:layout="@layout/limpieza" />
+
+    <fragment
+        android:id="@+id/legumbresFragment"
+        android:name="com.example.securitymerch.Legumbres"
+        android:label="Legumbres"
+        tools:layout="@layout/legumbres" />
+
+    <fragment
+        android:id="@+id/galletasFragment"
+        android:name="com.example.securitymerch.Galletas"
+        android:label="Galletas"
+        tools:layout="@layout/galletas" />
+</navigation>

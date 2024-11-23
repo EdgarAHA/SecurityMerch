@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "477031634781",
+    "project_id": "securitymerch",
+    "storage_bucket": "securitymerch.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:477031634781:android:bdd50c52accf4bfa6e7ab4",
+        "android_client_info": {
+          "package_name": "com.example.securitymerch"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDEdokOkUOWM15a3HF3yzx11sE2xTQnTko"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
