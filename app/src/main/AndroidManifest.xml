@@ -46,6 +46,12 @@
                 android:value=".MainActivity" />
         </activity>
 
+        <activity android:name=".Bebidas" />
+        <activity android:name=".Botanas" />
+        <activity android:name=".Limpieza" />
+        <activity android:name=".Legumbres" />
+        <activity android:name=".Galletas" />
+
     </application>
 
 </manifest>

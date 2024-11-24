@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.home.HomeFragment"
-    android:background="#319FF6">
+    android:background="#EBE3E6F8">
 
     <!-- Barra de búsqueda -->
     <LinearLayout
@@ -76,18 +76,19 @@
 
                         <ImageView
                             android:layout_width="match_parent"
-                            android:layout_height="166dp"
+                            android:layout_height="match_parent"
                             android:contentDescription="Bebidas"
                             android:src="@drawable/refresco" />
 
                     </androidx.cardview.widget.CardView>
+
                     <TextView
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Bebidas"
-                        android:gravity="center"
-                        android:textColor="#FFFFFF"
-                        android:layout_marginTop="5dp" />
+                        android:textAllCaps="true"
+                        android:textColor="#000509"
+                        android:textStyle="bold" />
 
                 </LinearLayout>
 
@@ -115,12 +116,12 @@
                     </androidx.cardview.widget.CardView>
 
                     <TextView
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Botanas"
-                        android:gravity="center"
-                        android:textColor="#FFFFFF"
-                        android:layout_marginTop="5dp" />
+                        android:textAllCaps="true"
+                        android:textColor="#000509"
+                        android:textStyle="bold" />
                 </LinearLayout>
             </LinearLayout>
 
@@ -156,12 +157,12 @@
                     </androidx.cardview.widget.CardView>
 
                     <TextView
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Productos de Limpieza"
-                        android:gravity="center"
-                        android:textColor="#FFFFFF"
-                        android:layout_marginTop="5dp" />
+                        android:text="P.Limpieza"
+                        android:textAllCaps="true"
+                        android:textColor="#000509"
+                        android:textStyle="bold" />
                 </LinearLayout>
 
                 <!-- Legumbres -->
@@ -187,13 +188,13 @@
                             android:contentDescription="Legumbres"/>
                     </androidx.cardview.widget.CardView>
 
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Legumbres"
-                        android:gravity="center"
-                        android:textColor="#FFFFFF"
-                        android:layout_marginTop="5dp" />
+                    <B <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="legumbres"
+                    android:textAllCaps="true"
+                    android:textColor="#000509"
+                    android:textStyle="bold" />
                 </LinearLayout>
             </LinearLayout>
 
@@ -228,12 +229,12 @@
                     </androidx.cardview.widget.CardView>
 
                     <TextView
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Galletas"
-                        android:gravity="center"
-                        android:textColor="#FFFFFF"
-                        android:layout_marginTop="5dp" />
+                        android:textAllCaps="true"
+                        android:textColor="#000509"
+                        android:textStyle="bold" />
                 </LinearLayout>
             </LinearLayout>
         </LinearLayout>
