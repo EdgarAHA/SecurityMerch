@@ -77,7 +77,6 @@
                         <ImageView
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:contentDescription="Bebidas"
                             android:src="@drawable/refresco" />
 
                     </androidx.cardview.widget.CardView>
@@ -112,7 +111,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:src="@drawable/patatasfritas"
-                            android:contentDescription="Botanas"/>
+                            />
                     </androidx.cardview.widget.CardView>
 
                     <TextView
@@ -153,7 +152,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:src="@drawable/limpieza"
-                            android:contentDescription="Limpieza"/>
+                           />
                     </androidx.cardview.widget.CardView>
 
                     <TextView
@@ -185,10 +184,10 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:src="@drawable/legumbres"
-                            android:contentDescription="Legumbres"/>
+                            />
                     </androidx.cardview.widget.CardView>
 
-                    <B <TextView
+                    <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="legumbres"
@@ -225,7 +224,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:src="@drawable/galletas"
-                            android:contentDescription="Galletas"/>
+                            />
                     </androidx.cardview.widget.CardView>
 
                     <TextView
