@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.securitymerch"
     xmlns:tools="http://schemas.android.com/tools">
 
     <application
@@ -51,6 +52,9 @@
         <activity android:name=".Limpieza" />
         <activity android:name=".Legumbres" />
         <activity android:name=".Galletas" />
+
+        <activity android:name=".AddProductActivity" />
+
 
     </application>
 

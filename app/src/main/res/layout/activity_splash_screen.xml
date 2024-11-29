@@ -36,17 +36,19 @@
 
     <com.airbnb.lottie.LottieAnimationView
         android:id="@+id/lottieAnimationView"
-        android:layout_width="485dp"
-        android:layout_height="349dp"
+        android:layout_width="625dp"
+        android:layout_height="499dp"
         android:layout_marginBottom="4dp"
         android:longClickable="true"
         android:scaleType="center"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView"
         app:lottie_autoPlay="true"
         app:lottie_cacheComposition="true"
         app:lottie_fileName="progress_bar10.json"
-        app:lottie_loop="true"
-        tools:layout_editor_absoluteX="-69dp" />
+        app:lottie_loop="true" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -47,6 +47,8 @@ dependencies {
     implementation(libs.navigation.fragment)
     implementation(libs.navigation.ui)
     implementation(libs.gridlayout)
+    implementation(libs.firebase.firestore)
+    implementation(libs.firebase.storage)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
@@ -54,5 +56,8 @@ dependencies {
     annotationProcessor("com.github.bumptech.glide:compiler:4.12.0")
     implementation ("com.airbnb.android:lottie:3.7.0")
     implementation ("com.google.android.material:material:1.9.0")
+    implementation ("com.google.android.gms:play-services-tasks:18.0.2")
+    implementation (platform("com.google.firebase:firebase-bom:32.0.0"))
+
 
 }
