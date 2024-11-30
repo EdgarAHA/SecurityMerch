@@ -2,6 +2,8 @@ package com.example.securitymerch;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -16,8 +18,8 @@ import java.util.List;
 public class Galletas extends AppCompatActivity {
 
     private RecyclerView recyclerView;
-    private com.example.securitymerch.adapters.ProductAdapter adapter;
-    private List<com.example.securitymerch.models.Product> productList;
+    private com.example.securitymerch.adapters.ProductAdapter productAdapter;
+    private List<com.example.securitymerch.models.Product> productList = new ArrayList<>();
     private FirebaseFirestore firestore;
 
     @Override
@@ -25,18 +27,27 @@ public class Galletas extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.galletas);
 
-        // Inicializar Firestore
-        firestore = FirebaseFirestore.getInstance();
-
-        // Configurar RecyclerView
         recyclerView = findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        productList = new ArrayList<>();
-        adapter = new com.example.securitymerch.adapters.ProductAdapter(productList);
-        recyclerView.setAdapter(adapter);
 
-        // Cargar productos de la categoría "Bebidas"
-        loadProducts();
+        productAdapter = new com.example.securitymerch.adapters.ProductAdapter(productList);
+        recyclerView.setAdapter(productAdapter);
+
+        firestore = FirebaseFirestore.getInstance();
+
+        // Cargar productos de la categoría "bebidas"
+        firestore.collection("categories").document("Galletas")
+                .collection("products")
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    productList.clear(); // Limpia la lista antes de agregar los productos
+                    productList.addAll(queryDocumentSnapshots.toObjects(com.example.securitymerch.models.Product.class));
+                    productAdapter.notifyDataSetChanged(); // Notifica cambios al adaptador
+                })
+                .addOnFailureListener(e -> {
+                    // Manejo de errores
+                    Log.e("Galletas", "Error al obtener productos", e);
+                });
 
         // Configuración del botón flotante
         FloatingActionButton fabAddProduct = findViewById(R.id.fab_add_galletas);
@@ -48,18 +59,20 @@ public class Galletas extends AppCompatActivity {
 
     }
 
-    private void loadProducts() {
-        firestore.collection("products")
-                .whereEqualTo("category", "Galletas")
-                .orderBy("name", Query.Direction.ASCENDING)
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // Recargar productos de Firestore
+        firestore.collection("categories").document("Galletas")
+                .collection("products")
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     productList.clear();
                     productList.addAll(queryDocumentSnapshots.toObjects(com.example.securitymerch.models.Product.class));
-                    adapter.notifyDataSetChanged();
+                    productAdapter.notifyDataSetChanged();
                 })
-                .addOnFailureListener(e -> {
-                    // Manejo de errores (opcional)
-                });
+                .addOnFailureListener(e -> Log.e("Galletas", "Error al recargar productos", e));
     }
+
+
 }

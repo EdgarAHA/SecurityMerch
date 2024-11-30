@@ -7,7 +7,7 @@ public class Product {
     private String barcode;
 
     // Constructor vacío (requerido por Firestore)
-    public Product(String name, int i, String category, String string, String barcode) {}
+    public Product() {}
 
     // Constructor completo
     public Product(String name, int quantity, String imageUrl, String barcode) {
@@ -49,5 +49,4 @@ public class Product {
     public void setBarcode(String barcode) {
         this.barcode = barcode;
     }
-
 }

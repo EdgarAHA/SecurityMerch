@@ -2,6 +2,8 @@ package com.example.securitymerch;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -16,8 +18,8 @@ import java.util.List;
 public class Bebidas extends AppCompatActivity {
 
     private RecyclerView recyclerView;
-    private ProductAdapter adapter;
-    private List<Product> productList;
+    private ProductAdapter productAdapter;
+    private List<Product> productList = new ArrayList<>();
     private FirebaseFirestore firestore;
 
     @Override
@@ -25,18 +27,29 @@ public class Bebidas extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.bebidas);
 
-        // Inicializar Firestore
-        firestore = FirebaseFirestore.getInstance();
-
-        // Configurar RecyclerView
         recyclerView = findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        productList = new ArrayList<>();
-        adapter = new ProductAdapter(productList);
-        recyclerView.setAdapter(adapter);
 
-        // Cargar productos de la categoría "Bebidas"
-        loadProducts();
+        productAdapter = new ProductAdapter(productList);
+        recyclerView.setAdapter(productAdapter);
+
+        firestore = FirebaseFirestore.getInstance();
+
+        // Cargar productos de la categoría "bebidas"
+        firestore.collection("categories").document("Bebidas")
+                .collection("products")
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    productList.clear(); // Limpia la lista antes de agregar los productos
+                    productList.addAll(queryDocumentSnapshots.toObjects(Product.class));
+                    productAdapter.notifyDataSetChanged(); // Notifica cambios al adaptador
+                })
+                .addOnFailureListener(e -> {
+                    // Manejo de errores
+                    Log.e("Bebidas", "Error al obtener productos", e);
+                });
+
+
 
         // Configuración del botón flotante
         FloatingActionButton fabAddProduct = findViewById(R.id.fab_add_bebida);
@@ -48,18 +61,19 @@ public class Bebidas extends AppCompatActivity {
 
     }
 
-    private void loadProducts() {
-        firestore.collection("products")
-                .whereEqualTo("category", "Bebidas")
-                .orderBy("name", Query.Direction.ASCENDING)
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // Recargar productos de Firestore
+        firestore.collection("categories").document("Bebidas")
+                .collection("products")
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     productList.clear();
                     productList.addAll(queryDocumentSnapshots.toObjects(Product.class));
-                    adapter.notifyDataSetChanged();
+                    productAdapter.notifyDataSetChanged();
                 })
-                .addOnFailureListener(e -> {
-                    // Manejo de errores (opcional)
-                });
+                .addOnFailureListener(e -> Log.e("Bebidas", "Error al recargar productos", e));
     }
+
 }

@@ -5,11 +5,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.bumptech.glide.Glide;
 import com.example.securitymerch.R;
 import com.example.securitymerch.models.Product;
+
 import java.util.List;
 
 public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductViewHolder> {
@@ -23,21 +26,22 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
     @NonNull
     @Override
     public ProductViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_inventory, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_inventory, parent, false);
         return new ProductViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ProductViewHolder holder, int position) {
         Product product = productList.get(position);
-        holder.nameTextView.setText(product.getName());
-        holder.quantityTextView.setText("Cantidad: " + product.getQuantity());
+        holder.productName.setText(product.getName());
+        holder.productQuantity.setText("Cantidad: " + product.getQuantity());
+        holder.productBarcode.setText("Código: " + product.getBarcode());
 
         // Cargar imagen con Glide
         Glide.with(holder.itemView.getContext())
                 .load(product.getImageUrl())
-                .into(holder.productImageView);
+                .placeholder(R.drawable.placeholder_image) // Imagen de espera
+                .into(holder.productImage);
     }
 
     @Override
@@ -46,14 +50,15 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
     }
 
     static class ProductViewHolder extends RecyclerView.ViewHolder {
-        TextView nameTextView, quantityTextView;
-        ImageView productImageView;
+        TextView productName, productQuantity, productBarcode;
+        ImageView productImage;
 
         public ProductViewHolder(@NonNull View itemView) {
             super(itemView);
-            nameTextView = itemView.findViewById(R.id.text_product_name);
-            quantityTextView = itemView.findViewById(R.id.text_product_quantity);
-            productImageView = itemView.findViewById(R.id.image_product);
+            productName = itemView.findViewById(R.id.product_name);
+            productQuantity = itemView.findViewById(R.id.product_quantity);
+            productBarcode = itemView.findViewById(R.id.product_barcode);
+            productImage = itemView.findViewById(R.id.product_image);
         }
     }
 }

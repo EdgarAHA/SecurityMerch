@@ -61,31 +61,32 @@ public class AddProductActivity extends AppCompatActivity {
     }
 
     private void saveProduct() {
-        String name = nameInput.getText().toString().trim();
-        String quantity = quantityInput.getText().toString().trim();
-        String barcode = barcodeInput.getText().toString().trim();
+        String name = nameInput.getText().toString();
+        String quantity = quantityInput.getText().toString();
+        String barcode = barcodeInput.getText().toString();
 
-        if (name.isEmpty() || quantity.isEmpty() || barcode.isEmpty() || imageUri == null) {
+        if (name.isEmpty() || quantity.isEmpty() || imageUri == null) {
             Toast.makeText(this, "Por favor, complete todos los campos", Toast.LENGTH_SHORT).show();
             return;
         }
 
-
+        // Subir imagen a Firebase Storage
         String imagePath = "products/" + UUID.randomUUID().toString();
         storageReference.child(imagePath).putFile(imageUri)
                 .addOnSuccessListener(taskSnapshot -> storageReference.child(imagePath).getDownloadUrl()
                         .addOnSuccessListener(uri -> {
-                            // Guardar en Firestore
-                            Product product = new Product(name, Integer.parseInt(quantity), category, uri.toString(), barcode);
-                            firestore.collection(category).add(product)
+                            // Guardar datos en la subcolección correspondiente
+                            Product product = new Product(name, Integer.parseInt(quantity), uri.toString(), barcode);
+                            firestore.collection("categories").document(category)
+                                    .collection("products").add(product)
                                     .addOnSuccessListener(documentReference -> {
                                         Toast.makeText(this, "Producto guardado exitosamente", Toast.LENGTH_SHORT).show();
                                         finish();
                                     })
-                                    .addOnFailureListener(e -> Toast.makeText(this, "Error al guardar en Firestore", Toast.LENGTH_SHORT).show());
-                        })
-                        .addOnFailureListener(e -> Toast.makeText(this, "Error al obtener URL de la imagen", Toast.LENGTH_SHORT).show()))
+                                    .addOnFailureListener(e -> Toast.makeText(this, "Error al guardar el producto", Toast.LENGTH_SHORT).show());
+                        }))
                 .addOnFailureListener(e -> Toast.makeText(this, "Error al subir la imagen", Toast.LENGTH_SHORT).show());
     }
+
 
 }

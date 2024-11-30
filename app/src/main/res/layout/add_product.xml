@@ -80,10 +80,10 @@
             android:layout_width="180dp"
             android:layout_height="180dp"
             android:layout_gravity="center"
-            android:background="@drawable/patatasfritas"
+            android:background="@drawable/agregar_producto"
             android:scaleType="centerCrop"
             android:elevation="4dp"
-            android:src="@drawable/patatasfritas" />
+            android:src="@drawable/agregar_producto" />
 
         <Button
             android:id="@+id/button_upload_image"
