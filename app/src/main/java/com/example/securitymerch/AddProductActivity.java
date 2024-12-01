@@ -81,16 +81,34 @@ public class AddProductActivity extends AppCompatActivity {
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
                     if (result.getResultCode() == RESULT_OK && result.getData() != null) {
-                        Bitmap bitmap = (Bitmap) result.getData().getExtras().get("data");
-                        scanBarcodeFromBitmap(bitmap);
+                        Bundle extras = result.getData().getExtras();
+                        if (extras != null) {
+                            Bitmap bitmap = (Bitmap) extras.get("data");
+                            if (bitmap != null) {
+                                scanBarcodeFromBitmap(bitmap);
+                            } else {
+                                Toast.makeText(this, "No se pudo obtener la imagen", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    } else {
+                        Toast.makeText(this, "Operación cancelada", Toast.LENGTH_SHORT).show();
                     }
                 }
         );
     }
 
     private void openBarcodeScanner() {
-        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        barcodeScannerLauncher.launch(intent);
+        try {
+            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            if (intent.resolveActivity(getPackageManager()) != null) {
+                barcodeScannerLauncher.launch(intent);
+            } else {
+                Toast.makeText(this, "La cámara no está disponible", Toast.LENGTH_SHORT).show();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast.makeText(this, "Error al abrir la cámara", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void scanBarcodeFromBitmap(Bitmap bitmap) {
@@ -100,9 +118,13 @@ public class AddProductActivity extends AppCompatActivity {
 
             scanner.process(image)
                     .addOnSuccessListener(this::handleBarcodeResult)
-                    .addOnFailureListener(e -> Toast.makeText(this, "Error al escanear el código", Toast.LENGTH_SHORT).show());
+                    .addOnFailureListener(e -> {
+                        e.printStackTrace();
+                        Toast.makeText(this, "Error al escanear el código de barras", Toast.LENGTH_SHORT).show();
+                    });
         } catch (Exception e) {
             e.printStackTrace();
+            Toast.makeText(this, "Error al procesar la imagen", Toast.LENGTH_SHORT).show();
         }
     }
 
