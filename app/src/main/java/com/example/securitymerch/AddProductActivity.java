@@ -1,6 +1,7 @@
 package com.example.securitymerch;
 
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
@@ -70,11 +71,21 @@ public class AddProductActivity extends AppCompatActivity {
         uploadImageButton.setOnClickListener(v -> imagePickerLauncher.launch("image/*"));
 
         // Escanear código de barras
-        scanBarcodeButton.setOnClickListener(v -> openBarcodeScanner());
+        scanBarcodeButton.setOnClickListener(v -> checkCameraPermission());
+
 
         // Guardar producto
         saveButton.setOnClickListener(v -> saveProduct());
     }
+
+    private void checkCameraPermission() {
+        if (checkSelfPermission(android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{android.Manifest.permission.CAMERA}, 100);
+        } else {
+            openBarcodeScanner();
+        }
+    }
+
 
     private void setupBarcodeScanner() {
         barcodeScannerLauncher = registerForActivityResult(
@@ -98,16 +109,11 @@ public class AddProductActivity extends AppCompatActivity {
     }
 
     private void openBarcodeScanner() {
-        try {
-            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-            if (intent.resolveActivity(getPackageManager()) != null) {
-                barcodeScannerLauncher.launch(intent);
-            } else {
-                Toast.makeText(this, "La cámara no está disponible", Toast.LENGTH_SHORT).show();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            Toast.makeText(this, "Error al abrir la cámara", Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (intent.resolveActivity(getPackageManager()) != null) {
+            barcodeScannerLauncher.launch(intent);
+        } else {
+            Toast.makeText(this, "No se encontró ninguna aplicación de cámara", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -148,6 +154,19 @@ public class AddProductActivity extends AppCompatActivity {
                     }
                 });
     }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == 100) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                openBarcodeScanner();
+            } else {
+                Toast.makeText(this, "Permiso de cámara denegado", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
 
     private void saveProduct() {
         String name = nameInput.getText().toString();
