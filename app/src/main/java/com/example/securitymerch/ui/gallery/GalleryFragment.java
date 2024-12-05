@@ -23,7 +23,6 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.mlkit.vision.barcode.BarcodeScanner;
 import com.google.mlkit.vision.barcode.BarcodeScanning;
 import com.google.mlkit.vision.barcode.common.Barcode;
@@ -78,8 +77,6 @@ public class GalleryFragment extends Fragment {
             return;
         }
 
-        Log.d("GalleryFragment", "Cargando inventario para el usuario con ID: " + userId);
-
         firestore.collectionGroup("products")
                 .whereEqualTo("userId", userId)
                 .get()
@@ -97,29 +94,18 @@ public class GalleryFragment extends Fragment {
                     totalStock = 0;
 
                     for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
-                        try {
-                            Product product = document.toObject(Product.class);
-                            if (product != null && product.getUserId() != null && product.getUserId().equals(userId)) {
-                                productList.add(product);
-                                totalStock += product.getQuantity();
-                            } else {
-                                Log.w("GalleryFragment", "Documento inválido: " + document.getData());
-                            }
-                        } catch (Exception e) {
-                            Log.e("GalleryFragment", "Error procesando documento: " + document.getId(), e);
+                        Product product = document.toObject(Product.class);
+                        if (product != null) {
+                            productList.add(product);
+                            totalStock += product.getQuantity();
                         }
                     }
 
                     productAdapter.notifyDataSetChanged();
                     totalStockView.setText("Total de Productos: " + totalStock);
-                    Log.d("GalleryFragment", "Inventario cargado con éxito. Total de productos: " + totalStock);
                 })
                 .addOnFailureListener(e -> {
-                    if (e instanceof FirebaseFirestoreException) {
-                        FirebaseFirestoreException firestoreException = (FirebaseFirestoreException) e;
-                        Log.e("GalleryFragment", "Error relacionado con Firestore: " + firestoreException.getMessage());
-                    }
-                    Toast.makeText(getContext(), "Error al recargar el inventario. Verifica los índices en Firestore.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "Error al cargar el inventario.", Toast.LENGTH_SHORT).show();
                     Log.e("GalleryFragment", "Error al cargar el inventario", e);
                 });
     }
@@ -150,18 +136,27 @@ public class GalleryFragment extends Fragment {
                     .addOnSuccessListener(barcodes -> {
                         if (!barcodes.isEmpty()) {
                             String scannedCode = barcodes.get(0).getRawValue();
-                            deleteProductByBarcode(scannedCode);
+                            if (scannedCode != null) {
+                                deleteProductByBarcode(scannedCode);
+                            } else {
+                                Toast.makeText(getContext(), "Código no válido.", Toast.LENGTH_SHORT).show();
+                            }
                         } else {
-                            Toast.makeText(getContext(), "No se detectó ningún código", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getContext(), "No se detectó ningún código.", Toast.LENGTH_SHORT).show();
                         }
                     })
-                    .addOnFailureListener(e -> Toast.makeText(getContext(), "Error al escanear el código", Toast.LENGTH_SHORT).show());
+                    .addOnFailureListener(e -> Toast.makeText(getContext(), "Error al escanear el código.", Toast.LENGTH_SHORT).show());
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     private void deleteProductByBarcode(String barcode) {
+        if (barcode == null || barcode.isEmpty()) {
+            Toast.makeText(getContext(), "El código es inválido.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         firestore.collectionGroup("products")
                 .whereEqualTo("userId", userId)
                 .whereEqualTo("barcode", barcode)
@@ -171,15 +166,15 @@ public class GalleryFragment extends Fragment {
                         for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
                             document.getReference().delete()
                                     .addOnSuccessListener(aVoid -> {
-                                        Toast.makeText(getContext(), "Producto eliminado", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(getContext(), "Producto eliminado.", Toast.LENGTH_SHORT).show();
                                         loadUserInventory();
                                     })
-                                    .addOnFailureListener(e -> Toast.makeText(getContext(), "Error al eliminar producto", Toast.LENGTH_SHORT).show());
+                                    .addOnFailureListener(e -> Toast.makeText(getContext(), "Error al eliminar producto.", Toast.LENGTH_SHORT).show());
                         }
                     } else {
-                        Toast.makeText(getContext(), "Producto no encontrado", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(), "Producto no encontrado.", Toast.LENGTH_SHORT).show();
                     }
                 })
-                .addOnFailureListener(e -> Toast.makeText(getContext(), "Error al buscar producto", Toast.LENGTH_SHORT).show());
+                .addOnFailureListener(e -> Toast.makeText(getContext(), "Error al buscar producto.", Toast.LENGTH_SHORT).show());
     }
 }

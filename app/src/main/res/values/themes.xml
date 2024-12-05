@@ -15,4 +15,5 @@
     <style name="Theme.SecurityMerch.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="Theme.SecurityMerch.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
 </resources>
