@@ -1,23 +1,26 @@
 package com.example.securitymerch.models;
 
 public class Product {
+
     private String name;
     private int quantity;
     private String imageUrl;
     private String barcode;
+    private String userId;
 
-    // Constructor vacío (requerido por Firestore)
-    public Product() {}
+    // Constructor vacío requerido para Firestore
+    public Product() {
+    }
 
-    // Constructor completo
-    public Product(String name, int quantity, String imageUrl, String barcode) {
+    public Product(String name, int quantity, String imageUrl, String barcode, String userId) {
         this.name = name;
         this.quantity = quantity;
         this.imageUrl = imageUrl;
         this.barcode = barcode;
+        this.userId = userId;
     }
 
-    // Getters y Setters
+    // Métodos getter y setter
     public String getName() {
         return name;
     }
@@ -48,5 +51,13 @@ public class Product {
 
     public void setBarcode(String barcode) {
         this.barcode = barcode;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 }

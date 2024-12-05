@@ -17,7 +17,7 @@ public class MainActivity extends AppCompatActivity {
 
     private EditText editTextUsername, editTextPassword;
     private Button buttonLogin;
-    private TextView textViewSignup;
+    private TextView textViewSignup, textViewForgotPassword;
     private FirebaseAuth mAuth;
 
     @Override
@@ -25,29 +25,29 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // Vincular vistas
         editTextUsername = findViewById(R.id.editTextUsername);
         editTextPassword = findViewById(R.id.editTextPassword);
         buttonLogin = findViewById(R.id.buttonLogin);
         textViewSignup = findViewById(R.id.textViewSignup);
+        textViewForgotPassword = findViewById(R.id.textViewForgotPassword);
 
         // Inicializar Firebase Auth
         mAuth = FirebaseAuth.getInstance();
 
-        // Configurar el botón de login
-        buttonLogin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                loginUser();
-            }
+        // Configurar el botón de inicio de sesión
+        buttonLogin.setOnClickListener(v -> loginUser());
+
+        // Configurar enlace para registrarse
+        textViewSignup.setOnClickListener(v -> {
+            // Intent para abrir la actividad de registro
+            startActivity(new Intent(MainActivity.this, Registro.class));
         });
 
-        // Redirigir al registro si no tiene una cuenta
-        textViewSignup.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Intent para abrir la actividad de registro
-                startActivity(new Intent(MainActivity.this, Registro.class));
-            }
+        // Configurar enlace para recuperar contraseña
+        textViewForgotPassword.setOnClickListener(v -> {
+            // Intent para abrir la actividad de cambiar contraseña
+            startActivity(new Intent(MainActivity.this, CambiarContraseña.class));
         });
     }
 

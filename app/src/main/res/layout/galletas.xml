@@ -44,7 +44,7 @@
         android:contentDescription="Agregar producto"
         android:src="@android:drawable/ic_input_add"
         android:tint="@android:color/white"
-        app:backgroundTint="#03A9F4"
+        app:backgroundTint="#4CAF50"
         app:layout_anchor="@id/recycler_view"
         app:layout_anchorGravity="bottom|end" />
 

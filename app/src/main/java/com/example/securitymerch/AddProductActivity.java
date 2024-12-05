@@ -1,7 +1,6 @@
 package com.example.securitymerch;
 
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
@@ -10,19 +9,18 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
-
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
-
 import com.example.securitymerch.models.Product;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.mlkit.vision.barcode.BarcodeScanner;
 import com.google.mlkit.vision.barcode.BarcodeScanning;
-import com.google.mlkit.vision.common.InputImage;
 import com.google.mlkit.vision.barcode.common.Barcode;
+import com.google.mlkit.vision.common.InputImage;
 
 import java.util.List;
 import java.util.UUID;
@@ -36,18 +34,19 @@ public class AddProductActivity extends AppCompatActivity {
 
     private FirebaseFirestore firestore;
     private StorageReference storageReference;
+    private String userId;
 
     private ActivityResultLauncher<Intent> barcodeScannerLauncher;
-    private ActivityResultLauncher<String> imagePickerLauncher;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_product);
 
-        // Inicializar Firestore y Storage
+        // Inicializar Firestore, Storage y Auth
         firestore = FirebaseFirestore.getInstance();
         storageReference = FirebaseStorage.getInstance().getReference();
+        userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
         // Capturar la categoría pasada desde el intent
         category = getIntent().getStringExtra("category");
@@ -64,45 +63,33 @@ public class AddProductActivity extends AppCompatActivity {
         // Configurar el escáner de código de barras
         setupBarcodeScanner();
 
-        // Configurar el selector de imágenes
-        setupImagePicker();
-
         // Seleccionar imagen
-        uploadImageButton.setOnClickListener(v -> imagePickerLauncher.launch("image/*"));
+        ActivityResultLauncher<String> launcher = registerForActivityResult(
+                new ActivityResultContracts.GetContent(),
+                uri -> {
+                    if (uri != null) {
+                        imageUri = uri;
+                        productImage.setImageURI(uri);
+                    }
+                });
+        uploadImageButton.setOnClickListener(v -> launcher.launch("image/*"));
 
         // Escanear código de barras
-        scanBarcodeButton.setOnClickListener(v -> checkCameraPermission());
-
+        scanBarcodeButton.setOnClickListener(v -> openBarcodeScanner());
 
         // Guardar producto
         saveButton.setOnClickListener(v -> saveProduct());
     }
-
-    private void checkCameraPermission() {
-        if (checkSelfPermission(android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(new String[]{android.Manifest.permission.CAMERA}, 100);
-        } else {
-            openBarcodeScanner();
-        }
-    }
-
 
     private void setupBarcodeScanner() {
         barcodeScannerLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
                     if (result.getResultCode() == RESULT_OK && result.getData() != null) {
-                        Bundle extras = result.getData().getExtras();
-                        if (extras != null) {
-                            Bitmap bitmap = (Bitmap) extras.get("data");
-                            if (bitmap != null) {
-                                scanBarcodeFromBitmap(bitmap);
-                            } else {
-                                Toast.makeText(this, "No se pudo obtener la imagen", Toast.LENGTH_SHORT).show();
-                            }
+                        Bitmap bitmap = (Bitmap) result.getData().getExtras().get("data");
+                        if (bitmap != null) {
+                            scanBarcodeFromBitmap(bitmap);
                         }
-                    } else {
-                        Toast.makeText(this, "Operación cancelada", Toast.LENGTH_SHORT).show();
                     }
                 }
         );
@@ -110,11 +97,7 @@ public class AddProductActivity extends AppCompatActivity {
 
     private void openBarcodeScanner() {
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        if (intent.resolveActivity(getPackageManager()) != null) {
-            barcodeScannerLauncher.launch(intent);
-        } else {
-            Toast.makeText(this, "No se encontró ninguna aplicación de cámara", Toast.LENGTH_SHORT).show();
-        }
+        barcodeScannerLauncher.launch(intent);
     }
 
     private void scanBarcodeFromBitmap(Bitmap bitmap) {
@@ -124,49 +107,21 @@ public class AddProductActivity extends AppCompatActivity {
 
             scanner.process(image)
                     .addOnSuccessListener(this::handleBarcodeResult)
-                    .addOnFailureListener(e -> {
-                        e.printStackTrace();
-                        Toast.makeText(this, "Error al escanear el código de barras", Toast.LENGTH_SHORT).show();
-                    });
+                    .addOnFailureListener(e -> Toast.makeText(this, "Error al escanear el código", Toast.LENGTH_SHORT).show());
         } catch (Exception e) {
             e.printStackTrace();
-            Toast.makeText(this, "Error al procesar la imagen", Toast.LENGTH_SHORT).show();
         }
     }
 
     private void handleBarcodeResult(List<Barcode> barcodes) {
-        if (barcodes.size() > 0) {
+        if (!barcodes.isEmpty()) {
             Barcode barcode = barcodes.get(0);
             barcodeInput.setText(barcode.getRawValue());
             Toast.makeText(this, "Código escaneado: " + barcode.getRawValue(), Toast.LENGTH_SHORT).show();
         } else {
-            Toast.makeText(this, "No se encontró ningún código de barras", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "No se detectó ningún código", Toast.LENGTH_SHORT).show();
         }
     }
-
-    private void setupImagePicker() {
-        imagePickerLauncher = registerForActivityResult(
-                new ActivityResultContracts.GetContent(),
-                uri -> {
-                    if (uri != null) {
-                        imageUri = uri;
-                        productImage.setImageURI(uri);
-                    }
-                });
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == 100) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                openBarcodeScanner();
-            } else {
-                Toast.makeText(this, "Permiso de cámara denegado", Toast.LENGTH_SHORT).show();
-            }
-        }
-    }
-
 
     private void saveProduct() {
         String name = nameInput.getText().toString();
@@ -183,8 +138,8 @@ public class AddProductActivity extends AppCompatActivity {
         storageReference.child(imagePath).putFile(imageUri)
                 .addOnSuccessListener(taskSnapshot -> storageReference.child(imagePath).getDownloadUrl()
                         .addOnSuccessListener(uri -> {
-                            // Guardar datos en la subcolección correspondiente
-                            Product product = new Product(name, Integer.parseInt(quantity), uri.toString(), barcode);
+                            // Guardar datos en Firestore con el ID del usuario
+                            Product product = new Product(name, Integer.parseInt(quantity), uri.toString(), barcode, userId);
                             firestore.collection("categories").document(category)
                                     .collection("products").add(product)
                                     .addOnSuccessListener(documentReference -> {
@@ -195,4 +150,6 @@ public class AddProductActivity extends AppCompatActivity {
                         }))
                 .addOnFailureListener(e -> Toast.makeText(this, "Error al subir la imagen", Toast.LENGTH_SHORT).show());
     }
+
+
 }
