@@ -164,17 +164,44 @@ public class GalleryFragment extends Fragment {
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     if (!queryDocumentSnapshots.isEmpty()) {
                         for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
-                            document.getReference().delete()
-                                    .addOnSuccessListener(aVoid -> {
-                                        Toast.makeText(getContext(), "Producto eliminado.", Toast.LENGTH_SHORT).show();
-                                        loadUserInventory();
-                                    })
-                                    .addOnFailureListener(e -> Toast.makeText(getContext(), "Error al eliminar producto.", Toast.LENGTH_SHORT).show());
+                            Product product = document.toObject(Product.class);
+                            if (product != null) {
+                                int currentQuantity = product.getQuantity();
+                                if (currentQuantity > 1) {
+                                    // Resta 1 a la cantidad actual
+                                    int updatedQuantity = currentQuantity - 1;
+                                    document.getReference().update("quantity", updatedQuantity)
+                                            .addOnSuccessListener(aVoid -> {
+                                                Toast.makeText(getContext(), "Cantidad actualizada. Stock restante: " + updatedQuantity, Toast.LENGTH_SHORT).show();
+                                                loadUserInventory(); // Recargar inventario
+                                            })
+                                            .addOnFailureListener(e -> {
+                                                Toast.makeText(getContext(), "Error al actualizar el producto.", Toast.LENGTH_SHORT).show();
+                                                Log.e("GalleryFragment", "Error al actualizar el producto", e);
+                                            });
+                                } else {
+                                    // Si la cantidad es 1, elimina el producto
+                                    document.getReference().delete()
+                                            .addOnSuccessListener(aVoid -> {
+                                                Toast.makeText(getContext(), "Producto eliminado.", Toast.LENGTH_SHORT).show();
+                                                loadUserInventory(); // Recargar inventario
+                                            })
+                                            .addOnFailureListener(e -> {
+                                                Toast.makeText(getContext(), "Error al eliminar producto.", Toast.LENGTH_SHORT).show();
+                                                Log.e("GalleryFragment", "Error al eliminar el producto", e);
+                                            });
+                                }
+                            } else {
+                                Toast.makeText(getContext(), "Producto no válido.", Toast.LENGTH_SHORT).show();
+                            }
                         }
                     } else {
                         Toast.makeText(getContext(), "Producto no encontrado.", Toast.LENGTH_SHORT).show();
                     }
                 })
-                .addOnFailureListener(e -> Toast.makeText(getContext(), "Error al buscar producto.", Toast.LENGTH_SHORT).show());
+                .addOnFailureListener(e -> {
+                    Toast.makeText(getContext(), "Error al buscar producto.", Toast.LENGTH_SHORT).show();
+                    Log.e("GalleryFragment", "Error al buscar el producto", e);
+                });
     }
 }
