@@ -8,6 +8,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import androidx.appcompat.widget.SearchView;
+
 import com.example.securitymerch.adapters.ProductAdapter;
 import com.example.securitymerch.models.Product;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -39,6 +41,22 @@ public class Botanas extends AppCompatActivity {
         firestore = FirebaseFirestore.getInstance();
         userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
+        // Configurar barra de búsqueda
+        SearchView searchView = findViewById(R.id.search_view);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                filterProducts(query);
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                filterProducts(newText);
+                return false;
+            }
+        });
+
         // Cargar productos de la categoría "Botanas" filtrados por el usuario actual
         loadUserProducts();
 
@@ -59,12 +77,23 @@ public class Botanas extends AppCompatActivity {
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     productList.clear(); // Limpia la lista antes de agregar los productos
                     productList.addAll(queryDocumentSnapshots.toObjects(Product.class));
-                    productAdapter.notifyDataSetChanged(); // Notifica cambios al adaptador
+                    productAdapter.updateList(productList); // Notificar cambios al adaptador
                 })
                 .addOnFailureListener(e -> {
                     // Manejo de errores
                     Log.e("Botanas", "Error al obtener productos", e);
                 });
+    }
+
+    private void filterProducts(String query) {
+        List<Product> filteredList = new ArrayList<>();
+        for (Product product : productList) {
+            // Filtrar productos que contengan la consulta en el nombre
+            if (product.getName().toLowerCase().contains(query.toLowerCase())) {
+                filteredList.add(product);
+            }
+        }
+        productAdapter.updateList(filteredList); // Actualizar adaptador con la lista filtrada
     }
 
     @Override

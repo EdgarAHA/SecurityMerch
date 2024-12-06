@@ -13,14 +13,15 @@ import com.bumptech.glide.Glide;
 import com.example.securitymerch.R;
 import com.example.securitymerch.models.Product;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductViewHolder> {
 
-    private final List<Product> productList;
+    private List<Product> productList;
 
     public ProductAdapter(List<Product> productList) {
-        this.productList = productList;
+        this.productList = productList != null ? productList : new ArrayList<>();
     }
 
     @NonNull
@@ -47,6 +48,14 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
     @Override
     public int getItemCount() {
         return productList.size();
+    }
+
+    // Método para actualizar la lista de productos
+    public void updateList(List<Product> newProductList) {
+        if (newProductList != null) {
+            this.productList = newProductList;
+            notifyDataSetChanged();
+        }
     }
 
     static class ProductViewHolder extends RecyclerView.ViewHolder {

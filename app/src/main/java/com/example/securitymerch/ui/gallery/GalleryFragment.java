@@ -16,6 +16,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.securitymerch.DeleteProduct;
 import com.example.securitymerch.R;
 import com.example.securitymerch.adapters.ProductAdapter;
 import com.example.securitymerch.models.Product;
@@ -37,7 +38,7 @@ public class GalleryFragment extends Fragment {
     private ProductAdapter productAdapter;
     private List<Product> productList = new ArrayList<>();
     private FirebaseFirestore firestore;
-    private FloatingActionButton fabScanDelete;
+    private FloatingActionButton fabScanDelete, fabOpenDeleteScreen;
     private TextView totalStockView;
     private String userId;
     private int totalStock = 0;
@@ -50,6 +51,7 @@ public class GalleryFragment extends Fragment {
         recyclerView = root.findViewById(R.id.recycler_view_gallery);
         totalStockView = root.findViewById(R.id.text_total_stock);
         fabScanDelete = root.findViewById(R.id.fab_scan_delete);
+        fabOpenDeleteScreen = root.findViewById(R.id.fab_open_delete_screen);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         productAdapter = new ProductAdapter(productList);
@@ -66,8 +68,14 @@ public class GalleryFragment extends Fragment {
         }
 
         fabScanDelete.setOnClickListener(v -> openCameraToDelete());
+        fabOpenDeleteScreen.setOnClickListener(v -> openDeleteScreen());
 
         return root;
+    }
+
+    private void openDeleteScreen() {
+        Intent intent = new Intent(getActivity(), DeleteProduct.class);
+        startActivity(intent);
     }
 
     private void loadUserInventory() {
@@ -168,40 +176,27 @@ public class GalleryFragment extends Fragment {
                             if (product != null) {
                                 int currentQuantity = product.getQuantity();
                                 if (currentQuantity > 1) {
-                                    // Resta 1 a la cantidad actual
                                     int updatedQuantity = currentQuantity - 1;
                                     document.getReference().update("quantity", updatedQuantity)
                                             .addOnSuccessListener(aVoid -> {
                                                 Toast.makeText(getContext(), "Cantidad actualizada. Stock restante: " + updatedQuantity, Toast.LENGTH_SHORT).show();
-                                                loadUserInventory(); // Recargar inventario
+                                                loadUserInventory();
                                             })
-                                            .addOnFailureListener(e -> {
-                                                Toast.makeText(getContext(), "Error al actualizar el producto.", Toast.LENGTH_SHORT).show();
-                                                Log.e("GalleryFragment", "Error al actualizar el producto", e);
-                                            });
+                                            .addOnFailureListener(e -> Log.e("GalleryFragment", "Error al actualizar el producto", e));
                                 } else {
-                                    // Si la cantidad es 1, elimina el producto
                                     document.getReference().delete()
                                             .addOnSuccessListener(aVoid -> {
                                                 Toast.makeText(getContext(), "Producto eliminado.", Toast.LENGTH_SHORT).show();
-                                                loadUserInventory(); // Recargar inventario
+                                                loadUserInventory();
                                             })
-                                            .addOnFailureListener(e -> {
-                                                Toast.makeText(getContext(), "Error al eliminar producto.", Toast.LENGTH_SHORT).show();
-                                                Log.e("GalleryFragment", "Error al eliminar el producto", e);
-                                            });
+                                            .addOnFailureListener(e -> Log.e("GalleryFragment", "Error al eliminar el producto", e));
                                 }
-                            } else {
-                                Toast.makeText(getContext(), "Producto no válido.", Toast.LENGTH_SHORT).show();
                             }
                         }
                     } else {
                         Toast.makeText(getContext(), "Producto no encontrado.", Toast.LENGTH_SHORT).show();
                     }
                 })
-                .addOnFailureListener(e -> {
-                    Toast.makeText(getContext(), "Error al buscar producto.", Toast.LENGTH_SHORT).show();
-                    Log.e("GalleryFragment", "Error al buscar el producto", e);
-                });
+                .addOnFailureListener(e -> Log.e("GalleryFragment", "Error al buscar el producto", e));
     }
 }

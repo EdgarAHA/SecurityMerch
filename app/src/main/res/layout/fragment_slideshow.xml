@@ -6,36 +6,26 @@
     android:padding="16dp">
 
     <!-- Encabezado -->
-    <TextView
-        android:id="@+id/tv_title"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="#1976D2"
-        android:elevation="4dp"
-        android:gravity="center"
-        android:padding="16dp"
-        android:text="Mi Cuenta"
-        android:textColor="#FFFFFF"
-        android:textSize="24sp"
-        android:textStyle="bold" />
 
     <!-- Imagen de Usuario -->
+
+    <!-- Contenedor de Información -->
+
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="392dp"
+        android:layout_height="213dp"
         android:layout_marginTop="24dp"
         android:gravity="center">
 
         <ImageView
             android:id="@+id/iv_user_icon"
-            android:layout_width="120dp"
-            android:layout_height="120dp"
+            android:layout_width="181dp"
+            android:layout_height="185dp"
             android:background="@drawable/curriculum"
             android:elevation="4dp"
             android:src="@drawable/curriculum" />
     </LinearLayout>
 
-    <!-- Contenedor de Información -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

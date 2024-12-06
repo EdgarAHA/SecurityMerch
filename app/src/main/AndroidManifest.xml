@@ -63,6 +63,8 @@
         <activity android:name=".Galletas" />
 
         <activity android:name=".AddProductActivity" />
+        <activity android:name=".DeleteProduct" />
+
 
         <activity android:name=".CambiarContraseña" />
 

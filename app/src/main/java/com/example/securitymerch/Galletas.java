@@ -49,28 +49,50 @@ public class Galletas extends AppCompatActivity {
             intent.putExtra("category", "Galletas"); // Pasar la categoría
             startActivity(intent);
         });
+
+        // Configuración de la barra de búsqueda
+        androidx.appcompat.widget.SearchView searchView = findViewById(R.id.search_view);
+        searchView.setOnQueryTextListener(new androidx.appcompat.widget.SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                filterProducts(query);
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                filterProducts(newText);
+                return false;
+            }
+        });
     }
 
     private void loadUserProducts() {
         firestore.collection("categories").document("Galletas")
                 .collection("products")
-                .whereEqualTo("userId", userId) // Filtrar por el usuario actual
+                .whereEqualTo("userId", userId)
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
-                    productList.clear(); // Limpia la lista antes de agregar los productos
+                    productList.clear();
                     productList.addAll(queryDocumentSnapshots.toObjects(Product.class));
-                    productAdapter.notifyDataSetChanged(); // Notifica cambios al adaptador
+                    productAdapter.notifyDataSetChanged();
                 })
-                .addOnFailureListener(e -> {
-                    // Manejo de errores
-                    Log.e("Galletas", "Error al obtener productos", e);
-                });
+                .addOnFailureListener(e -> Log.e("Galletas", "Error al obtener productos", e));
+    }
+
+    private void filterProducts(String query) {
+        List<Product> filteredList = new ArrayList<>();
+        for (Product product : productList) {
+            if (product.getName().toLowerCase().contains(query.toLowerCase())) {
+                filteredList.add(product);
+            }
+        }
+        productAdapter.updateList(filteredList);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        // Recargar productos de Firestore
         loadUserProducts();
     }
 }
