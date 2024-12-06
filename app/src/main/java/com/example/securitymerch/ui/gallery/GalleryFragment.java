@@ -199,4 +199,11 @@ public class GalleryFragment extends Fragment {
                 })
                 .addOnFailureListener(e -> Log.e("GalleryFragment", "Error al buscar el producto", e));
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        loadUserInventory(); // Asegurar que el inventario se actualice al regresar al fragmento.
+    }
+
 }

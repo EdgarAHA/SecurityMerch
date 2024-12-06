@@ -9,7 +9,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -140,7 +139,7 @@ public class DeleteProduct extends AppCompatActivity {
                                 document.getReference().update("quantity", updatedQuantity)
                                         .addOnSuccessListener(aVoid -> {
                                             Toast.makeText(this, "Producto actualizado correctamente", Toast.LENGTH_SHORT).show();
-                                            clearFields();
+                                            navigateToGallery();
                                         })
                                         .addOnFailureListener(e -> {
                                             Toast.makeText(this, "Error al actualizar el producto", Toast.LENGTH_SHORT).show();
@@ -150,7 +149,7 @@ public class DeleteProduct extends AppCompatActivity {
                                 document.getReference().delete()
                                         .addOnSuccessListener(aVoid -> {
                                             Toast.makeText(this, "Producto eliminado correctamente", Toast.LENGTH_SHORT).show();
-                                            clearFields();
+                                            navigateToGallery();
                                         })
                                         .addOnFailureListener(e -> {
                                             Toast.makeText(this, "Error al eliminar el producto", Toast.LENGTH_SHORT).show();
@@ -166,9 +165,11 @@ public class DeleteProduct extends AppCompatActivity {
                 });
     }
 
-    private void clearFields() {
-        // Limpiar campos después de eliminar o actualizar
-        editTextQuantity.setText("");
-        editTextBarcode.setText("");
+    private void navigateToGallery() {
+        // Redirigir a la pestaña Gallery
+        Intent intent = new Intent(this, MainActivity2.class);
+        intent.putExtra("fragment", "gallery");
+        startActivity(intent);
+        finish();
     }
 }
