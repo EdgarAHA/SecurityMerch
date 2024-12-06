@@ -11,6 +11,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.securitymerch.ui.gallery.GalleryFragment;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -167,8 +168,8 @@ public class DeleteProduct extends AppCompatActivity {
 
     private void navigateToGallery() {
         // Redirigir al `GalleryFragment` dentro de la actividad principal
-        Intent intent = new Intent(this, MainActivity2.class);
-        intent.putExtra("navigateTo", "gallery");
+        Intent intent = new Intent(this, GalleryFragment.class);
+        intent.putExtra("navigateTo", "fragment_gallery");
         startActivity(intent);
         finish();
     }
