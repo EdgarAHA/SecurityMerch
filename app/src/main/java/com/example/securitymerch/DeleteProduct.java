@@ -166,9 +166,9 @@ public class DeleteProduct extends AppCompatActivity {
     }
 
     private void navigateToGallery() {
-        // Redirigir a la pestaña Gallery
+        // Redirigir al `GalleryFragment` dentro de la actividad principal
         Intent intent = new Intent(this, MainActivity2.class);
-        intent.putExtra("fragment", "gallery");
+        intent.putExtra("navigateTo", "gallery");
         startActivity(intent);
         finish();
     }
