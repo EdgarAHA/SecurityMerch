@@ -66,6 +66,7 @@
         <activity android:name=".Limpieza" />
         <activity android:name=".Legumbres" />
         <activity android:name=".Galletas" />
+        <activity android:name=".Dulces" />
         <activity android:name=".AddProductActivity" />
         <activity android:name=".DeleteProduct" />
         <activity android:name=".CambiarContraseña" />

@@ -8,6 +8,7 @@
     tools:context=".ui.home.HomeFragment"
     android:background="#EBE3E6F8">
 
+
     <!-- Contenedor de scroll -->
     <ScrollView
         android:layout_width="0dp"
@@ -51,7 +52,8 @@
                         <ImageView
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:src="@drawable/refresco" />
+                            android:src="@drawable/coquita"
+                            android:scaleType="fitXY" />
 
                     </androidx.cardview.widget.CardView>
 
@@ -84,8 +86,8 @@
                         <ImageView
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:src="@drawable/patatasfritas"
-                            />
+                            android:src="@drawable/doritos"
+                            android:scaleType="fitXY" />
                     </androidx.cardview.widget.CardView>
 
                     <TextView
@@ -125,8 +127,8 @@
                         <ImageView
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:src="@drawable/limpieza"
-                            />
+                            android:src="@drawable/cloro"
+                            android:scaleType="fitXY" />
                     </androidx.cardview.widget.CardView>
 
                     <TextView
@@ -157,8 +159,8 @@
                         <ImageView
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:src="@drawable/legumbres"
-                            />
+                            android:src="@drawable/semillas"
+                            android:scaleType="fitXY"/>
                     </androidx.cardview.widget.CardView>
 
                     <TextView
@@ -197,14 +199,46 @@
                         <ImageView
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:src="@drawable/galletas"
-                            />
+                            android:src="@drawable/panes"
+                            android:scaleType="fitXY"/>
                     </androidx.cardview.widget.CardView>
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Galletas/Panes"
+                        android:textAllCaps="true"
+                        android:textColor="#000509"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <!-- Dulces -->
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    android:layout_marginHorizontal="16dp">
+
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/card_dulces"
+                        android:layout_width="144dp"
+                        android:layout_height="187dp"
+                        app:cardCornerRadius="15dp"
+                        app:cardElevation="5dp"
+                        android:layout_gravity="center">
+
+                        <ImageView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:src="@drawable/dulcesitos"
+                            android:scaleType="fitXY"/>
+                    </androidx.cardview.widget.CardView>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Dulces"
                         android:textAllCaps="true"
                         android:textColor="#000509"
                         android:textStyle="bold" />

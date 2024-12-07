@@ -10,6 +10,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import com.example.securitymerch.Bebidas;
 import com.example.securitymerch.Botanas;
+import com.example.securitymerch.Dulces;
 import com.example.securitymerch.Galletas;
 import com.example.securitymerch.Legumbres;
 import com.example.securitymerch.Limpieza;
@@ -45,6 +46,11 @@ public class HomeFragment extends Fragment {
 
         view.findViewById(R.id.card_galletas).setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), Galletas.class);
+            startActivity(intent);
+        });
+
+        view.findViewById(R.id.card_dulces).setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), Dulces.class);
             startActivity(intent);
         });
 
