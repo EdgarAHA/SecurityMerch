@@ -31,8 +31,12 @@ import com.itextpdf.layout.element.Paragraph;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
+import java.util.TimeZone;
 
 public class ReporteFragment extends Fragment {
 
@@ -101,8 +105,17 @@ public class ReporteFragment extends Fragment {
 
         try (PdfWriter writer = new PdfWriter(new FileOutputStream(pdfFile))) {
             Document document = new Document(new com.itextpdf.kernel.pdf.PdfDocument(writer));
-            document.add(new Paragraph("Reporte de Inventario").setFontSize(18).setBold().setMarginBottom(20));
 
+            // Configurar formato y zona horaria para la fecha
+            SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault());
+            dateFormat.setTimeZone(TimeZone.getDefault());
+            String currentDate = dateFormat.format(new Date());
+
+            // Agregar título y fecha
+            document.add(new Paragraph("Reporte de Inventario").setFontSize(18).setBold().setMarginBottom(10));
+            document.add(new Paragraph("Fecha: " + currentDate).setFontSize(12).setItalic().setMarginBottom(20));
+
+            // Agregar los productos al PDF
             for (Product product : products) {
                 document.add(new Paragraph("Nombre: " + product.getName()));
                 document.add(new Paragraph("Cantidad: " + product.getQuantity()));
