@@ -219,3 +219,4 @@ public class ReporteFragment extends Fragment {
         startActivity(chooser);
     }
 }
+
