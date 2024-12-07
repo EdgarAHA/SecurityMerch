@@ -1,7 +1,9 @@
 package com.example.securitymerch.ui.reporte;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.view.LayoutInflater;
@@ -13,6 +15,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 
 import com.example.securitymerch.R;
@@ -87,13 +90,14 @@ public class ReporteFragment extends Fragment {
     }
 
     private void createPDF(List<Product> products) {
-        // Definir el nombre del archivo en una carpeta segura
+        // Crear una carpeta para guardar el PDF
         File pdfDirectory = new File(requireContext().getExternalFilesDir(null), "Reportes");
         if (!pdfDirectory.exists()) {
             pdfDirectory.mkdirs();
         }
 
-        File pdfFile = new File(pdfDirectory, "Reporte_Inventario.pdf");
+        String fileName = "Reporte_Inventario.pdf";
+        File pdfFile = new File(pdfDirectory, fileName);
 
         try (PdfWriter writer = new PdfWriter(new FileOutputStream(pdfFile))) {
             Document document = new Document(new com.itextpdf.kernel.pdf.PdfDocument(writer));
@@ -107,10 +111,24 @@ public class ReporteFragment extends Fragment {
             }
 
             document.close();
-            Toast.makeText(getContext(), "Reporte PDF generado: " + pdfFile.getAbsolutePath(), Toast.LENGTH_SHORT).show();
+
+            // Mostrar mensaje y abrir/compartir el PDF
+            Toast.makeText(getContext(), "Reporte PDF generado", Toast.LENGTH_SHORT).show();
+            openOrSharePDF(pdfFile);
         } catch (IOException e) {
             Toast.makeText(getContext(), "Error al generar el PDF.", Toast.LENGTH_SHORT).show();
             e.printStackTrace();
         }
+    }
+
+    private void openOrSharePDF(File pdfFile) {
+        Uri pdfUri = FileProvider.getUriForFile(requireContext(), requireContext().getPackageName() + ".fileprovider", pdfFile);
+
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setDataAndType(pdfUri, "application/pdf");
+        intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY | Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
+        Intent chooser = Intent.createChooser(intent, "Abrir o compartir PDF");
+        startActivity(chooser);
     }
 }
