@@ -28,6 +28,10 @@ import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.layout.Document;
 import com.itextpdf.layout.element.Paragraph;
 
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -42,15 +46,16 @@ public class ReporteFragment extends Fragment {
 
     private FirebaseFirestore firestore;
     private String userId;
-    private Button btnGenerateReport;
+    private Button btnGenerateReport, btnGenerateExcel;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_reporte, container, false);
 
         btnGenerateReport = root.findViewById(R.id.btn_generate_report);
+        btnGenerateExcel = root.findViewById(R.id.btn_generate_excel);
 
-        // Inicializar Firebase (si no está inicializado)
+        // Inicializar Firebase
         FirebaseApp.initializeApp(requireContext());
         firestore = FirebaseFirestore.getInstance();
         userId = FirebaseAuth.getInstance().getCurrentUser() != null
@@ -63,6 +68,7 @@ public class ReporteFragment extends Fragment {
         }
 
         btnGenerateReport.setOnClickListener(v -> generatePDF());
+        btnGenerateExcel.setOnClickListener(v -> generateExcel());
 
         return root;
     }
@@ -127,21 +133,89 @@ public class ReporteFragment extends Fragment {
 
             // Mostrar mensaje y abrir/compartir el PDF
             Toast.makeText(getContext(), "Reporte PDF generado", Toast.LENGTH_SHORT).show();
-            openOrSharePDF(pdfFile);
+            openOrShareFile(pdfFile, "application/pdf");
         } catch (IOException e) {
             Toast.makeText(getContext(), "Error al generar el PDF.", Toast.LENGTH_SHORT).show();
             e.printStackTrace();
         }
     }
 
-    private void openOrSharePDF(File pdfFile) {
-        Uri pdfUri = FileProvider.getUriForFile(requireContext(), requireContext().getPackageName() + ".fileprovider", pdfFile);
+    private void generateExcel() {
+        if (userId == null) {
+            Toast.makeText(getContext(), "Usuario no autenticado", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        firestore.collectionGroup("products")
+                .whereEqualTo("userId", userId)
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    if (!queryDocumentSnapshots.isEmpty()) {
+                        List<Product> productList = new ArrayList<>();
+                        for (com.google.firebase.firestore.QueryDocumentSnapshot document : queryDocumentSnapshots) {
+                            Product product = document.toObject(Product.class);
+                            productList.add(product);
+                        }
+                        createExcel(productList);
+                    } else {
+                        Toast.makeText(getContext(), "No hay productos en el inventario.", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(getContext(), "Error al obtener los productos.", Toast.LENGTH_SHORT).show();
+                });
+    }
+
+    private void createExcel(List<Product> products) {
+        // Crear una carpeta para guardar el Excel
+        File excelDirectory = new File(requireContext().getExternalFilesDir(null), "Reportes");
+        if (!excelDirectory.exists()) {
+            excelDirectory.mkdirs();
+        }
+
+        String fileName = "Reporte_Inventario.xlsx";
+        File excelFile = new File(excelDirectory, fileName);
+
+        XSSFWorkbook workbook = new XSSFWorkbook();
+        XSSFSheet sheet = workbook.createSheet("Inventario");
+
+        // Crear fila de encabezado
+        Row headerRow = sheet.createRow(0);
+        headerRow.createCell(0).setCellValue("Nombre");
+        headerRow.createCell(1).setCellValue("Cantidad");
+        headerRow.createCell(2).setCellValue("Código de Barras");
+
+        // Agregar datos de los productos
+        int rowNum = 1;
+        for (Product product : products) {
+            Row row = sheet.createRow(rowNum++);
+            row.createCell(0).setCellValue(product.getName());
+            row.createCell(1).setCellValue(product.getQuantity());
+            row.createCell(2).setCellValue(product.getBarcode());
+        }
+
+        // Guardar el archivo Excel
+        try (FileOutputStream fos = new FileOutputStream(excelFile)) {
+            workbook.write(fos);
+            workbook.close();
+
+            // Mostrar mensaje y abrir/compartir el Excel
+            Toast.makeText(getContext(), "Reporte Excel generado", Toast.LENGTH_SHORT).show();
+            openOrShareFile(excelFile, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        } catch (IOException e) {
+            Toast.makeText(getContext(), "Error al generar el Excel.", Toast.LENGTH_SHORT).show();
+            e.printStackTrace();
+        }
+    }
+
+    private void openOrShareFile(File file, String mimeType) {
+        Uri fileUri = FileProvider.getUriForFile(requireContext(), requireContext().getPackageName() + ".fileprovider", file);
 
         Intent intent = new Intent(Intent.ACTION_VIEW);
-        intent.setDataAndType(pdfUri, "application/pdf");
+        intent.setDataAndType(fileUri, mimeType);
         intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY | Intent.FLAG_GRANT_READ_URI_PERMISSION);
 
-        Intent chooser = Intent.createChooser(intent, "Abrir o compartir PDF");
+        Intent chooser = Intent.createChooser(intent, "Abrir o compartir archivo");
         startActivity(chooser);
     }
 }
