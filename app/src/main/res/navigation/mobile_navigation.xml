@@ -22,4 +22,10 @@
         android:name="com.example.securitymerch.ui.slideshow.SlideshowFragment"
         android:label="Mi Perfil"
         tools:layout="@layout/fragment_slideshow" />
+    <fragment
+        android:id="@+id/nav_reporte"
+        android:name="com.example.securitymerch.ui.reporte.ReporteFragment"
+        android:label="Mi Perfil"
+        tools:layout="@layout/fragment_reporte" />
+
 </navigation>

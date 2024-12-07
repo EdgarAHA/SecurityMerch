@@ -60,6 +60,8 @@ dependencies {
     implementation (platform("com.google.firebase:firebase-bom:32.0.0"))
     implementation ("com.google.mlkit:barcode-scanning:17.0.2")
     implementation ("com.google.android.gms:play-services-mlkit-barcode-scanning:18.0.0")
+    implementation ("com.itextpdf:itext7-core:7.2.3")
+
 
 
 }

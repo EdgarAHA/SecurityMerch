@@ -16,5 +16,9 @@
             android:id="@+id/nav_slideshow"
             android:icon="@drawable/usuario"
             android:title="Mi Perfil" />
+        <item
+            android:id="@+id/nav_reporte"
+            android:icon="@drawable/pdf"
+            android:title="Reportes" />
     </group>
 </menu>

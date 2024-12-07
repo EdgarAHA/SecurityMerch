@@ -1,15 +1,18 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:backgroundTint="#673AB7"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="16dp"
+    android:background="@drawable/rectangulo">
 
     <!-- Encabezado -->
 
     <!-- Imagen de Usuario -->
 
     <!-- Contenedor de Información -->
+
+
 
     <LinearLayout
         android:layout_width="392dp"
@@ -21,9 +24,9 @@
             android:id="@+id/iv_user_icon"
             android:layout_width="181dp"
             android:layout_height="185dp"
-            android:background="@drawable/curriculum"
             android:elevation="4dp"
-            android:src="@drawable/curriculum" />
+            android:src="@drawable/gente" />
+
     </LinearLayout>
 
     <LinearLayout
@@ -88,7 +91,8 @@
         android:paddingVertical="12dp"
         android:text="Cambiar Contraseña"
         android:textColor="#FFFFFF"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        />
 
     <Button
         android:id="@+id/btn_logout"
