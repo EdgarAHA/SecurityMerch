@@ -28,59 +28,59 @@
         android:theme="@style/Theme.SecurityMerch"
         tools:targetApi="31">
 
-    <!-- Pantalla de bienvenida (Splash Screen) como actividad de inicio -->
-    <activity
-        android:name=".SplashScreen"
-        android:exported="true">
-        <intent-filter>
-            <action android:name="android.intent.action.MAIN" />
-            <category android:name="android.intent.category.LAUNCHER" />
-        </intent-filter>
-    </activity>
+        <!-- Pantalla de bienvenida (Splash Screen) como actividad de inicio -->
+        <activity
+            android:name=".SplashScreen"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
 
-    <!-- Actividad principal (Inicio de sesión) -->
-    <activity
-        android:name=".MainActivity"
-        android:exported="true">
-    </activity>
+        <!-- Actividad principal (Inicio de sesión) -->
+        <activity
+            android:name=".MainActivity"
+            android:exported="true">
+        </activity>
 
-    <!-- Actividad de registro -->
-    <activity
-        android:name=".Registro"
-        android:exported="true">
-    </activity>
+        <!-- Actividad de registro -->
+        <activity
+            android:name=".Registro"
+            android:exported="true">
+        </activity>
 
-    <!-- Actividad principal como host de fragmentos -->
-    <activity
-        android:name=".MainActivity2"
-        android:exported="true"
-        android:label="@string/title_activity_main2"
-        android:theme="@style/Theme.SecurityMerch.NoActionBar">
-        <meta-data
-            android:name="android.support.PARENT_ACTIVITY"
-            android:value=".MainActivity" />
-    </activity>
+        <!-- Actividad principal como host de fragmentos -->
+        <activity
+            android:name=".MainActivity2"
+            android:exported="true"
+            android:label="@string/title_activity_main2"
+            android:theme="@style/Theme.SecurityMerch.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MainActivity" />
+        </activity>
 
-    <activity android:name=".Bebidas" />
-    <activity android:name=".Botanas" />
-    <activity android:name=".Limpieza" />
-    <activity android:name=".Legumbres" />
-    <activity android:name=".Galletas" />
-    <activity android:name=".AddProductActivity" />
-    <activity android:name=".DeleteProduct" />
-    <activity android:name=".CambiarContraseña" />
+        <activity android:name=".Bebidas" />
+        <activity android:name=".Botanas" />
+        <activity android:name=".Limpieza" />
+        <activity android:name=".Legumbres" />
+        <activity android:name=".Galletas" />
+        <activity android:name=".AddProductActivity" />
+        <activity android:name=".DeleteProduct" />
+        <activity android:name=".CambiarContraseña" />
 
-    <!-- Proveedor para manejo de archivos -->
-    <provider
-        android:name="androidx.core.content.FileProvider"
-        android:authorities="${applicationId}.fileprovider"
-        android:exported="false"
-        android:grantUriPermissions="true">
-        <meta-data
-            android:name="android.support.FILE_PROVIDER_PATHS"
-            android:resource="@xml/file_paths" />
-    </provider>
+        <!-- Proveedor para manejo de archivos -->
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
 
-</application>
+    </application>
 
-    </manifest>
+</manifest>
