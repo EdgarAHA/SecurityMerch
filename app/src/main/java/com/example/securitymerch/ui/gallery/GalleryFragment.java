@@ -1,17 +1,23 @@
 package com.example.securitymerch.ui.gallery;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.provider.MediaStore;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.core.app.NotificationCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -39,24 +45,31 @@ public class GalleryFragment extends Fragment {
     private List<Product> productList = new ArrayList<>();
     private FirebaseFirestore firestore;
     private FloatingActionButton fabScanDelete, fabOpenDeleteScreen;
-    private TextView totalStockView;
+    private TextView totalStockView, minStockValueView;
+    private SeekBar minStockSeekBar;
     private String userId;
     private int totalStock = 0;
+    private int minStockThreshold = 10; // Valor inicial del stock mínimo
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_gallery, container, false);
 
+        // Inicializar vistas
         recyclerView = root.findViewById(R.id.recycler_view_gallery);
         totalStockView = root.findViewById(R.id.text_total_stock);
         fabScanDelete = root.findViewById(R.id.fab_scan_delete);
         fabOpenDeleteScreen = root.findViewById(R.id.fab_open_delete_screen);
+        minStockSeekBar = root.findViewById(R.id.seekBar_min_stock);
+        minStockValueView = root.findViewById(R.id.text_min_stock_value);
 
+        // Configurar RecyclerView
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         productAdapter = new ProductAdapter(productList);
         recyclerView.setAdapter(productAdapter);
 
+        // Inicializar Firebase
         firestore = FirebaseFirestore.getInstance();
         userId = FirebaseAuth.getInstance().getCurrentUser() != null
                 ? FirebaseAuth.getInstance().getCurrentUser().getUid() : null;
@@ -67,6 +80,27 @@ public class GalleryFragment extends Fragment {
             Toast.makeText(getContext(), "Usuario no autenticado", Toast.LENGTH_SHORT).show();
         }
 
+        // Configurar SeekBar para el rango de stock mínimo
+        minStockSeekBar.setProgress(minStockThreshold);
+        minStockValueView.setText(String.valueOf(minStockThreshold));
+        minStockSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                minStockThreshold = progress;
+                minStockValueView.setText(String.valueOf(progress));
+                checkLowStockProducts(); // Revisar productos con stock bajo
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+            }
+        });
+
+        // Configurar botones flotantes
         fabScanDelete.setOnClickListener(v -> openCameraToDelete());
         fabOpenDeleteScreen.setOnClickListener(v -> openDeleteScreen());
 
@@ -111,6 +145,7 @@ public class GalleryFragment extends Fragment {
 
                     productAdapter.notifyDataSetChanged();
                     totalStockView.setText("Total de Productos: " + totalStock);
+                    checkLowStockProducts(); // Revisar productos con stock bajo
                 })
                 .addOnFailureListener(e -> {
                     Toast.makeText(getContext(), "Error al cargar el inventario.", Toast.LENGTH_SHORT).show();
@@ -200,10 +235,35 @@ public class GalleryFragment extends Fragment {
                 .addOnFailureListener(e -> Log.e("GalleryFragment", "Error al buscar el producto", e));
     }
 
+    private void checkLowStockProducts() {
+        for (Product product : productList) {
+            if (product.getQuantity() <= minStockThreshold) {
+                sendLowStockNotification(product);
+            }
+        }
+    }
+
+    private void sendLowStockNotification(Product product) {
+        NotificationManager notificationManager = (NotificationManager) requireContext().getSystemService(Context.NOTIFICATION_SERVICE);
+        String channelId = "low_stock_channel";
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel channel = new NotificationChannel(channelId, "Productos con bajo stock", NotificationManager.IMPORTANCE_HIGH);
+            notificationManager.createNotificationChannel(channel);
+        }
+
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(requireContext(), channelId)
+                .setSmallIcon(android.R.drawable.ic_dialog_alert) // Ícono integrado
+                .setContentTitle("Producto con bajo stock")
+                .setContentText("El producto \"" + product.getName() + "\" tiene un stock de " + product.getQuantity() + ".")
+                .setPriority(NotificationCompat.PRIORITY_HIGH);
+
+        notificationManager.notify(product.getBarcode().hashCode(), builder.build());
+    }
+
     @Override
     public void onResume() {
         super.onResume();
         loadUserInventory(); // Asegurar que el inventario se actualice al regresar al fragmento.
     }
-
 }
