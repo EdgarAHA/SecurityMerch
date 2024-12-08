@@ -4,6 +4,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="16dp"
+    android:background="@drawable/fondo2"
   >
 
     <!-- Encabezado -->
@@ -35,7 +36,8 @@
         android:layout_marginTop="24dp"
         android:elevation="6dp"
         android:orientation="vertical"
-        android:padding="16dp">
+        android:padding="16dp"
+        android:gravity="center">
 
         <TextView
             android:id="@+id/tv_user_info_label"
@@ -44,8 +46,9 @@
             android:layout_marginBottom="8dp"
             android:text="Información del Usuario"
             android:textColor="#333333"
-            android:textSize="16sp"
-            android:textStyle="bold" />
+            android:textSize="19sp"
+            android:textStyle="bold"
+            />
 
         <TextView
             android:id="@+id/tv_user_name"
@@ -53,7 +56,9 @@
             android:layout_height="wrap_content"
             android:text="Nombre de Usuario"
             android:textColor="#555555"
-            android:textSize="14sp" />
+            android:textSize="17sp"
+            android:gravity="center"
+            />
 
         <TextView
             android:id="@+id/tv_user_email"
@@ -62,7 +67,9 @@
             android:layout_marginTop="4dp"
             android:text="correo@ejemplo.com"
             android:textColor="#555555"
-            android:textSize="14sp" />
+            android:textSize="17sp"
+            android:gravity="center"
+            />
     </LinearLayout>
 
     <!-- Sección de Contraseña -->
@@ -78,18 +85,21 @@
         android:layout_marginBottom="8dp"
         android:text="Contraseña"
         android:textColor="#333333"
-        android:textSize="16sp"
-        android:textStyle="bold" />
+        android:textSize="19sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        />
 
     <Button
         android:id="@+id/btn_change_password"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:backgroundTint="#4CAF50"
+        android:layout_marginBottom="17dp"
+        android:backgroundTint="#008080"
         android:elevation="4dp"
         android:paddingVertical="12dp"
         android:text="Cambiar Contraseña"
+        android:textSize="16dp"
         android:textColor="#FFFFFF"
         android:textStyle="bold"
         />
@@ -98,9 +108,10 @@
         android:id="@+id/btn_logout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:backgroundTint="#E45656"
+        android:backgroundTint="#FF5F83"
         android:elevation="4dp"
         android:paddingVertical="12dp"
+        android:textSize="16dp"
         android:text="Cerrar Sesión"
         android:textColor="#FFFFFF"
         android:textStyle="bold" />

@@ -5,44 +5,63 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.reporte.ReporteFragment">
+    tools:context=".ui.reporte.ReporteFragment"
+    android:background="@drawable/fondo1">
 
-    <!-- Imagen para el PDF -->
+    <!-- Imagen centrada -->
+
+    <!-- Botón para generar PDF -->
+
+    <!-- Botón para generar Excel -->
+
     <ImageView
         android:id="@+id/image_pdf"
         android:layout_width="179dp"
         android:layout_height="193dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginBottom="20dp"
         android:background="@drawable/pdf2"
-        app:layout_constraintBottom_toTopOf="@+id/btn_generate_report"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.185" />
 
-    <!-- Botón para generar PDF -->
+    <ImageView
+        android:layout_width="157dp"
+        android:layout_height="211dp"
+        android:background="@drawable/excel2"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.515"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.719" />
+
     <Button
         android:id="@+id/btn_generate_report"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:backgroundTint="#03A9F4"
+        android:backgroundTint="#FC4B08"
         android:text="Generar Reporte PDF"
         android:textColor="#FFFFFF"
-        app:layout_constraintTop_toBottomOf="@id/image_pdf"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintHorizontal_bias="0.513"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/image_pdf" />
 
-    <!-- Botón para generar Excel -->
     <Button
         android:id="@+id/btn_generate_excel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:backgroundTint="#4CAF50"
+        android:layout_marginTop="248dp"
+        android:backgroundTint="#008080"
         android:text="Generar Reporte Excel"
         android:textColor="#FFFFFF"
-        app:layout_constraintTop_toBottomOf="@id/btn_generate_report"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintHorizontal_bias="0.532"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btn_generate_report" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

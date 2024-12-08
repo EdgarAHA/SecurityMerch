@@ -15,7 +15,7 @@
             android:fontFamily="sans-serif-medium"
             android:text="INICIA SESIÓN"
             android:textAllCaps="false"
-            android:textColor="#E8E0E1"
+            android:textColor="#FFFFFF"
             android:textSize="34sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toTopOf="@+id/editTextUsername"
